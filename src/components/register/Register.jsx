@@ -1,8 +1,10 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../authProvider/AuthProvider";
 
 const Register = () => {
   const { registerUser } = useContext(AuthContext);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const handelRegister = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -10,7 +12,21 @@ const Register = () => {
     const email = form.email.value;
     const url = form.url.value;
     const password = form.password.value;
-    const confirmPass = form.confirmpass.value;
+    const confirmPass = form.confirmPass.value;
+    setSuccess("");
+    setError("");
+    //password validation
+    if (password.length < 6) {
+      setError("Password must be 6 characters");
+      return;
+    } else if (password !== confirmPass) {
+      setError("Password not match");
+      return;
+    } else if (!/[A-Z]/.test(password)) {
+      setError("Password must include at least one uppercase letter.");
+    } else if (!/[!@#$%^&*()_+\-={}[\]|:";'<>?,./]/.test(password)) {
+      setError("Password must include at least one special character.");
+    }
     const user = {
       name,
       url,
@@ -20,12 +36,13 @@ const Register = () => {
     };
     console.log(user);
     registerUser(email, password)
-    .then(result=>{
-      console.log(result.user)
-    })
-    .catch(error=>{
-      console.log(error)
-    })
+      .then((result) => {
+        console.log(result.user);
+        setSuccess("Login Success");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <div className="hero bg-base-200 min-h-screen">
@@ -49,7 +66,6 @@ const Register = () => {
                 placeholder="name"
                 name="name"
                 className="input input-bordered"
-      
               />
             </div>
             <div className="form-control">
@@ -61,7 +77,6 @@ const Register = () => {
                 placeholder="url"
                 name="url"
                 className="input input-bordered"
-          
               />
             </div>
             <div className="form-control">
@@ -94,14 +109,17 @@ const Register = () => {
               </label>
               <input
                 type="password"
-                name="confirmpass"
+                name="confirmPass"
                 placeholder="Confirm password"
                 className="input input-bordered"
+                required
               />
             </div>
             <div className="form-control mt-6">
               <button className="btn btn-primary">Register</button>
             </div>
+            {error && <p className="text-red-600"> {error}</p>}
+            {success && <p className="text-green-600"> {success}</p>}
           </form>
         </div>
       </div>
