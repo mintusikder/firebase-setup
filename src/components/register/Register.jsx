@@ -1,10 +1,13 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../authProvider/AuthProvider";
-
+import { FaEyeSlash, FaRegEye } from "react-icons/fa";
 const Register = () => {
   const { registerUser } = useContext(AuthContext);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
+  const [showPass, setShowPass] = useState(false);
+  const [emailError, setEmailError] = useState("");
   const handelRegister = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -15,7 +18,12 @@ const Register = () => {
     const confirmPass = form.confirmPass.value;
     setSuccess("");
     setError("");
+    setEmailError("");
     //password validation
+    if (!/@gmail\.com$/.test(email)) {
+      setEmailError("Email must end with @gmail.com");
+      return;
+    }
     if (password.length < 6) {
       setError("Password must be 6 characters");
       return;
@@ -24,8 +32,10 @@ const Register = () => {
       return;
     } else if (!/[A-Z]/.test(password)) {
       setError("Password must include at least one uppercase letter.");
+      return;
     } else if (!/[!@#$%^&*()_+\-={}[\]|:";'<>?,./]/.test(password)) {
       setError("Password must include at least one special character.");
+      return;
     }
     const user = {
       name,
@@ -41,7 +51,7 @@ const Register = () => {
         setSuccess("Login Success");
       })
       .catch((error) => {
-        console.log(error);
+        setError(error.message.split("/")[1].split(")"));
       });
   };
   return (
@@ -91,29 +101,50 @@ const Register = () => {
                 required
               />
             </div>
+            {emailError && <p className="text-rose-600">{emailError}</p>}
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Password</span>
               </label>
-              <input
-                type="password"
-                placeholder="password"
-                name="password"
-                className="input input-bordered"
-                required
-              />
+              <div className="relative">
+                <input
+                  type={showPass ? "text" : "password"}
+                  placeholder="password"
+                  name="password"
+                  className="input input-bordered w-full"
+                  required
+                />
+                <span
+                  className="absolute mt-4 right-3"
+                  onClick={() => setShowPass(!showPass)}
+                >
+                  {showPass ? <FaRegEye></FaRegEye> : <FaEyeSlash></FaEyeSlash>}
+                </span>
+              </div>
             </div>
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Confirm Password</span>
               </label>
-              <input
-                type="password"
-                name="confirmPass"
-                placeholder="Confirm password"
-                className="input input-bordered"
-                required
-              />
+              <div className="relative">
+                <input
+                  type={showConfirmPass ? "text" : "password"}
+                  name="confirmPass"
+                  placeholder="Confirm password"
+                  className="input input-bordered w-full"
+                  required
+                />
+                <span
+                  className="absolute mt-4 right-3"
+                  onClick={() => setShowConfirmPass(!showConfirmPass)}
+                >
+                  {showConfirmPass ? (
+                    <FaRegEye></FaRegEye>
+                  ) : (
+                    <FaEyeSlash></FaEyeSlash>
+                  )}
+                </span>
+              </div>
             </div>
             <div className="form-control mt-6">
               <button className="btn btn-primary">Register</button>
