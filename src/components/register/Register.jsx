@@ -1,8 +1,13 @@
+import { useContext } from "react";
+import { AuthContext } from "../authProvider/AuthProvider";
+
 const Register = () => {
+  const { registerUser } = useContext(AuthContext);
   const handelRegister = (e) => {
     e.preventDefault();
     const form = e.target;
     const name = form.name.value;
+    const email = form.email.value;
     const url = form.url.value;
     const password = form.password.value;
     const confirmPass = form.confirmpass.value;
@@ -11,8 +16,16 @@ const Register = () => {
       url,
       password,
       confirmPass,
+      email,
     };
     console.log(user);
+    registerUser(email, password)
+    .then(result=>{
+      console.log(result.user)
+    })
+    .catch(error=>{
+      console.log(error)
+    })
   };
   return (
     <div className="hero bg-base-200 min-h-screen">
@@ -36,7 +49,7 @@ const Register = () => {
                 placeholder="name"
                 name="name"
                 className="input input-bordered"
-                required
+      
               />
             </div>
             <div className="form-control">
@@ -48,7 +61,7 @@ const Register = () => {
                 placeholder="url"
                 name="url"
                 className="input input-bordered"
-                required
+          
               />
             </div>
             <div className="form-control">
@@ -84,7 +97,6 @@ const Register = () => {
                 name="confirmpass"
                 placeholder="Confirm password"
                 className="input input-bordered"
-                required
               />
             </div>
             <div className="form-control mt-6">
