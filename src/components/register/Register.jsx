@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../authProvider/AuthProvider";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa";
 const Register = () => {
-  const { registerUser } = useContext(AuthContext);
+  const { registerUser,setUser } = useContext(AuthContext);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [showConfirmPass, setShowConfirmPass] = useState(false);
@@ -47,7 +47,7 @@ const Register = () => {
     console.log(user);
     registerUser(email, password)
       .then((result) => {
-        console.log(result.user);
+        setUser(result.user);
         setSuccess("Login Success");
       })
       .catch((error) => {

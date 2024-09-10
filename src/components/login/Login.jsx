@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { AuthContext } from "../authProvider/AuthProvider";
 
 const Login = () => {
-  const { loginUser } = useContext(AuthContext);
+  const { loginUser, googleLogin,setUser,facebook } = useContext(AuthContext);
   const handelLogin = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -14,12 +14,30 @@ const Login = () => {
     };
     console.log(user);
     loginUser(email, password)
-    .then(result=>{
-      console.log(result.user)
-    })
-    .catch(error => {
-      console.log(error)
-    })
+      .then((result) => {
+        setUser(result.user);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handelGoogleLogin = () => {
+    googleLogin()
+      .then((result) => {
+        setUser(result.user);
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
+  };
+  const handelFacebookLogin = () => {
+    facebook()
+      .then((result) => {
+        setUser(result.user);
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
   };
   return (
     <div className="hero bg-base-200 min-h-screen">
@@ -66,6 +84,12 @@ const Login = () => {
             <div className="form-control mt-6">
               <button className="btn btn-primary">Login</button>
             </div>
+            <button onClick={handelGoogleLogin} className="btn btn-secondary">
+              Google Login
+            </button>
+            <button onClick={handelFacebookLogin} className="btn btn-secondary">
+              Facebook Login
+            </button>
           </form>
         </div>
       </div>
