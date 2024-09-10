@@ -1,8 +1,12 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../authProvider/AuthProvider";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const { loginUser, googleLogin,setUser,facebook } = useContext(AuthContext);
+  const { loginUser, googleLogin,setUser,facebook,user } = useContext(AuthContext);
+  const location = useLocation()
+  const navigate = useNavigate()
+  console.log(location)
   const handelLogin = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -39,6 +43,11 @@ const Login = () => {
         console.error(error.message);
       });
   };
+  useEffect(() =>{
+    if(user){
+      navigate(location.state)
+    }
+  },[user])
   return (
     <div className="hero bg-base-200 min-h-screen">
       <div className="hero-content flex-col lg:flex-row-reverse">
